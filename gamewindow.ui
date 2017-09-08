@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GameWindow</class>
+ <widget class="QMainWindow" name="GameWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>714</width>
+    <height>703</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>GameWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="GameView" name="graphicsView">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>20</y>
+      <width>602</width>
+      <height>602</height>
+     </rect>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>714</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_New_Game">
+    <property name="title">
+     <string>&amp;New Game</string>
+    </property>
+    <addaction name="serverAction"/>
+    <addaction name="clientAction"/>
+   </widget>
+   <widget class="QMenu" name="menuA_bout">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="ruleAction"/>
+    <addaction name="separator"/>
+    <addaction name="aboutAction"/>
+   </widget>
+   <addaction name="menu_New_Game"/>
+   <addaction name="menuA_bout"/>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="serverAction">
+   <property name="text">
+    <string>As &amp;Server</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+S</string>
+   </property>
+  </action>
+  <action name="clientAction">
+   <property name="text">
+    <string>As &amp;Client</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+C</string>
+   </property>
+  </action>
+  <action name="aboutAction">
+   <property name="text">
+    <string>A&amp;bout</string>
+   </property>
+  </action>
+  <action name="ruleAction">
+   <property name="text">
+    <string>&amp;Rule</string>
+   </property>
+   <property name="shortcut">
+    <string>F1</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>GameView</class>
+   <extends>QGraphicsView</extends>
+   <header>gameview.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
