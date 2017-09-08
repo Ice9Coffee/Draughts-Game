@@ -4,6 +4,8 @@
 #include <QGraphicsView>
 #include "gamestate.h"
 #include "piece.h"
+#include "wayhighlight.h"
+#include "piecehighlight.h"
 
 class GameView : public QGraphicsView
 {
@@ -15,6 +17,12 @@ public:
     GameState *state;
 
     void tempo(Piece *p, QPoint from, QPoint to);
+
+    void hlWay(wayNode* root);
+    void hlWay(QPoint pos);
+    void hlPiece(wayNode* nd);
+    void hdWayHL();
+    void hdPieceHL();
 
 protected:
     void drawBackground(QPainter *painter, const QRectF &rect) override;

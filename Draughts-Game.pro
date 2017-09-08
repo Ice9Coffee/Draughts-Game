@@ -4,7 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT += core gui\
+      network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -27,13 +28,17 @@ SOURCES += main.cpp\
         gamewindow.cpp \
     gameview.cpp \
     gamestate.cpp \
-    piece.cpp
+    piece.cpp \
+    wayhighlight.cpp \
+    piecehighlight.cpp
 
 HEADERS  += gamewindow.h \
     gameview.h \
     gamestate.h \
     piece.h \
-    const.h
+    const.h \
+    wayhighlight.h \
+    piecehighlight.h
 
 FORMS    += gamewindow.ui
 

@@ -52,11 +52,33 @@ void GameView::drawBackground(QPainter *painter, const QRectF &rect)
 
 }
 
+void GameView::turn() {
+    movingColor = (movingColor == white ? black : white);
+    qDebug() << (movingColor == black ? "Black" : "White") << "Turn! planting tree...";
+    if(way) delete way;
+    way = state->findWays(movingColor);
+
+    if(way->child.isEmpty()) {
+        //ofColor lose....
+        qDebug() << "Draughts:" << (movingColor == black ? "Black" : "White") << "lose!!!!!!!";
+        return;
+    }
+
+    //VFX.
+    for(wayNode* nd: way->child) hlPiece(nd);
+
+    qDebug() << "Tree planted!" << (movingColor == black ? "Black" : "White") << "please.";
+    update();
+}
+
 void GameView::tempo(Piece* p, QPoint from, QPoint to) {
 
     wayNode* ndFrom = nullptr;
     wayNode* ndTo   = nullptr;
     QPointF finalPos;
+
+    //VFX.  已松开鼠标.
+    hdWayHL();
 
     //检验合法性...
     for(wayNode* nd: way->child)
@@ -65,55 +87,108 @@ void GameView::tempo(Piece* p, QPoint from, QPoint to) {
         for(wayNode* nd: ndFrom->child)
             if(nd->pos == to) { ndTo = nd; break; }
         if( ndTo != nullptr ) {
-            //合法性判定结束！开始移动...
+            //合法性判定结束！执行一着棋
+            //吃子.
             QPoint eat = state->move(from, to);
-            if(eat.x() != -1 && eat.y() != -1) { //吃子
+            if(eat.x() != -1 && eat.y() != -1) {
                 QPointF eatPos(eat.x()*CELL_R*2 + CELL_R - SCENE_R,
                                eat.y()*CELL_R*2 + CELL_R - SCENE_R);
                 auto* item = scene->itemAt(eatPos, transform());
                 if(qgraphicsitem_cast<Piece*>(item)) scene->removeItem(item);
             }
+            //移动.
             finalPos.rx() = to.x()*CELL_R*2 + CELL_R - SCENE_R;
             finalPos.ry() = to.y()*CELL_R*2 + CELL_R - SCENE_R;
             way = ndFrom;
             p->setPos(finalPos);
+
+            //到底时，回合结束
             if(ndTo->child.isEmpty()) {
+                //TODO: 升变...
                 turn();
+            }
+            else { //VFX.
+                hlPiece(ndTo);
+                hlWay(ndTo);
             }
         }
         else { //illegal, go back.
             finalPos.rx() = from.x()*CELL_R*2 + CELL_R - SCENE_R;
             finalPos.ry() = from.y()*CELL_R*2 + CELL_R - SCENE_R;
             p->setPos(finalPos);
+            //VFX.
+            if(way->pos.x() == -1 && way->pos.y() == -1)
+                for(wayNode* nd: way->child) hlPiece(nd);
+            else hlPiece(ndFrom);
         }
     }
     else { //shoudn't happen in the final version.
         finalPos.rx() = from.x()*CELL_R*2 + CELL_R - SCENE_R;
         finalPos.ry() = from.y()*CELL_R*2 + CELL_R - SCENE_R;
         p->setPos(finalPos);
+        //VFX.
+        if(way->pos.x() == -1 && way->pos.y() == -1)
+            for(wayNode* nd: way->child) hlPiece(nd);
+        else hlPiece(ndFrom);
     }
 
     return;
 }
 
-void GameView::turn() {
-    movingColor = (movingColor == white ? black : white);
-    qDebug() << (movingColor == black ? "Black" : "White") << "Turn! planting tree...";
-    if(way) delete way;
-    way = state->findWays(movingColor);
-    if(way->child.isEmpty()) {
-        //ofColor lose....
-        qDebug() << "Draughts:" << (movingColor == black ? "Black" : "White") << "lose!!!!!!!";
-        return;
-    }
-    for(wayNode* nd: way->child) {
+void GameView::hlWay(wayNode *root)
+{
+    for(wayNode* nd: root->child) {
         qreal x = nd->pos.x()*CELL_R*2 + CELL_R - SCENE_R;
         qreal y = nd->pos.y()*CELL_R*2 + CELL_R - SCENE_R;
-        auto* item = scene->itemAt(x, y, transform());
-        if(qgraphicsitem_cast<Piece*>(item))
-            qgraphicsitem_cast<Piece*>(item)->setTakable(true);
+        auto* hl = new wayHighlight;
+        scene->addItem(hl);
+        hl->setPos(x, y);
+        qDebug() << "hlWay at (" << x << ',' << y << ')';
     }
-    qDebug() << "Tree planted!" << (movingColor == black ? "Black" : "White") << "please.";
+    update();
+}
+
+void GameView::hlWay(QPoint pos)
+{
+    //a helper function.
+    for(wayNode* nd: way->child) {
+        if(nd->pos == pos) {
+            hlWay(nd);
+            return;
+        }
+    }
+    //shouldn't reach here.
+    qDebug() << "Error in GameView::hlWay!!!!!";
+}
+
+void GameView::hlPiece(wayNode *nd)
+{
+    qreal x = nd->pos.x()*CELL_R*2 + CELL_R - SCENE_R;
+    qreal y = nd->pos.y()*CELL_R*2 + CELL_R - SCENE_R;
+    auto* hl = new pieceHighlight;
+    scene->addItem(hl);
+    hl->setPos(x, y);
+    qDebug() << "hlPiece at (" << x << ',' << y << ')';
+    update();
+}
+
+void GameView::hdWayHL()
+{
+    for(QGraphicsItem* item: scene->items()) {
+        if(qgraphicsitem_cast<wayHighlight*>(item))
+            scene->removeItem(item);
+    }
+    qDebug() << "wayHL hidden!";
+    update();
+}
+
+void GameView::hdPieceHL()
+{
+    for(QGraphicsItem* item: scene->items()) {
+        if(qgraphicsitem_cast<pieceHighlight*>(item))
+            scene->removeItem(item);
+    }
+    qDebug() << "pieceHL hidden!";
     update();
 }
 

@@ -3,7 +3,6 @@
 
 #include <QGraphicsItem>
 #include "gamestate.h"
-
 class GameView;
 
 class Piece : public QGraphicsItem
@@ -13,8 +12,6 @@ public:
 
     enum { Type = UserType + 1 };
     int type() const override { return Type; }
-
-    bool advance();
 
     QRectF boundingRect() const override;
     QPainterPath shape() const override;

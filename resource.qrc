@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/pic">
         <file alias="board">pic/board.png</file>
+        <file alias="wayHL">pic/wayHighlight.png</file>
+        <file alias="pieceHL">pic/pieceHighlight.png</file>
     </qresource>
 </RCC>
