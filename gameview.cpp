@@ -4,7 +4,8 @@
 #include <QDebug>
 
 GameView::GameView(QWidget *parent)
-    : QGraphicsView(parent), bgPix(":/pic/board"), way(nullptr)
+    : QGraphicsView(parent),
+      bgPix(":/pic/board"), way(nullptr), state(nullptr), rivalColor(null)
 {
     scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
@@ -13,33 +14,43 @@ GameView::GameView(QWidget *parent)
     setCacheMode(CacheBackground);
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setRenderHint(QPainter::Antialiasing);
-    setTransformationAnchor(AnchorUnderMouse);
+    setTransformationAnchor(AnchorViewCenter);
     scale(1, 1);
     setMinimumSize(2*SCENE_R, 2*SCENE_R);
+}
 
+void GameView::initGame(Draughts* initBoard)
+{
     //add pieces...
-    state = new GameState;
+    if(state) delete state;
+    state = new GameState(initBoard);
     for(int i = 0; i < 100; ++i) {
         if(state->board[i] == null) continue;
         Piece *piece = new Piece(this, state->board[i]);
         scene->addItem(piece);
         piece->setPos((i%10)*CELL_R*2 + CELL_R - SCENE_R,
                       (i/10)*CELL_R*2 + CELL_R - SCENE_R);
+
+        if((state->board[i] & color) == rivalColor)
+        { piece->setAcceptedMouseButtons(0); }
+        else { piece->setAcceptedMouseButtons(Qt::LeftButton); }
     }
 
     //game start...
     movingColor = white; //set to white and call turn(), so the first one is black.
     turn();
+}
 
-    /*/for debug..
-    way = state->findWays(black);
-    for(wayNode* nd: way->child) {
-        qreal x = nd->pos.x()*CELL_R*2 + CELL_R - SCENE_R;
-        qreal y = nd->pos.y()*CELL_R*2 + CELL_R - SCENE_R;
-        auto* item = scene->itemAt(x, y, transform());
-        if(qgraphicsitem_cast<Piece*>(item))
-            qgraphicsitem_cast<Piece*>(item)->setTakable(true);
-    }*/
+void GameView::chooseRivalColor(Draughts c)
+{
+    rivalColor = c;
+    if(rivalColor == black) rotate(180);
+
+    for(QGraphicsItem* item: items()) if(Piece* p = qgraphicsitem_cast<Piece*>(item))
+    {
+        //if((p->drt & color) == rivalColor) p->setAcceptedMouseButtons(0);
+        //else p->setAcceptedMouseButtons(Qt::LeftButton);
+    }
 }
 
 void GameView::drawBackground(QPainter *painter, const QRectF &rect)
@@ -59,9 +70,11 @@ void GameView::turn() {
     way = state->findWays(movingColor);
 
     if(way->child.isEmpty()) {
-        //TODO: ofColor lose....
+        //ofColor lose.
         qDebug() << "Draughts:"
                  << (movingColor == black ? "Black" : "White") << "lose!!!!!!!";
+        if(rivalColor != null) emit endSignal(rivalColor == movingColor ? 1 : -1);
+        else emit endSignal(movingColor == white ? black : white);
         return;
     }
 
@@ -87,7 +100,9 @@ void GameView::tempo(Piece* p, const QPoint from, const QPoint to) {
         if( ndTo != nullptr ) {
 
             //合法性判定结束！执行一着棋
-            //TODO: 发信...
+            //发信.
+            emit tempoData(from, to);
+
             //吃子.
             QPoint eat = state->move(from, to);
             if(eat.x() != -1 && eat.y() != -1) {
@@ -103,7 +118,7 @@ void GameView::tempo(Piece* p, const QPoint from, const QPoint to) {
             way = ndFrom;
             //到底时，回合结束
             if(ndTo->child.isEmpty()) {
-                //TODO: 升变...
+                //升变.
                 int idx = 10*to.y() + to.x();
                 Draughts piece = state->board[idx];
                 if((to.y() == 0 && ((piece & color) == black))
@@ -141,6 +156,11 @@ void GameView::tempo(Piece* p, const QPoint from, const QPoint to) {
     }
 
     return;
+}
+
+void GameView::remoteTempo(const QPoint from, const QPoint to)
+{
+    //TODO............
 }
 
 void GameView::hlWay(wayNode *root)

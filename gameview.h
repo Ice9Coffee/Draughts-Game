@@ -6,6 +6,7 @@
 #include "piece.h"
 #include "wayhighlight.h"
 #include "piecehighlight.h"
+#include "gamewindow.h"
 
 class GameView : public QGraphicsView
 {
@@ -13,10 +14,13 @@ class GameView : public QGraphicsView
 
 public:
     GameView(QWidget *parent = 0);
+    void initGame(Draughts *initBoard = nullptr);
 
-    GameState *state;
+    //For vs.Network mode
+    void chooseRivalColor(Draughts c);
 
     void tempo(Piece *p, const QPoint from, const QPoint to);
+    void remoteTempo(const QPoint from, const QPoint to);
 
     void hlWay(wayNode* root);
     void hlWay(QPoint pos);
@@ -24,17 +28,22 @@ public:
     void hdWayHL();
     void hdPieceHL();
 
+signals:
+    void tempoData(const QPoint from, const QPoint to);
+    void endSignal(int result);
+
 protected:
     void drawBackground(QPainter *painter, const QRectF &rect) override;
 
 private:
+    GameState *state;
     QGraphicsScene *scene;
 
-    QPixmap bgPix;
-
     wayNode* way;
-
     Draughts movingColor;
+    Draughts rivalColor;
+
+    QPixmap bgPix;
 
     void turn();
 

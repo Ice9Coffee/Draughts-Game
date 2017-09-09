@@ -3,19 +3,24 @@
 #include <QDebug>
 #include <memory>
 
-GameState::GameState() :
+GameState::GameState(Draughts* initBoard) :
     board(new Draughts[100])
 {
     memset(board, null, 100*sizeof(Draughts));
-    /*/normal start...
-    for(int i = 0; i < 20; ++i)
-        board[(i/5)*10+(i%5*2+1-(i/5)%2)] = white;
-    for(int i = 0; i < 20; ++i)
-        board[(6+i/5)*10+(i%5*2+1-(i/5)%2)] = black;
-    //for(int i = 0; i < 100; ++i) qDebug() << board[i];
-    //*/
 
-    //for test...
+    if(initBoard == nullptr) { //normal start.
+        for(int i = 0; i < 20; ++i)
+            board[(i/5)*10+(i%5*2+1-(i/5)%2)] = white;
+        for(int i = 0; i < 20; ++i)
+            board[(6+i/5)*10+(i%5*2+1-(i/5)%2)] = black;
+    }
+    else { //custom start.
+        memcpy_s(board,     100*sizeof(Draughts),
+                 initBoard, 100*sizeof(Draughts));
+    }
+
+
+    /*/for test...
     board[12] = white;
     board[16] = black;
     board[18] = black;
@@ -27,8 +32,7 @@ GameState::GameState() :
     board[72] = white;
     board[85] = black;
     //*/
-
-
+    //for(int i = 0; i < 100; ++i) qDebug() << board[i];
 }
 
 QPoint GameState::move(QPoint from, QPoint to)
@@ -87,21 +91,9 @@ wayNode* GameState::findWays(Draughts forColor)
         }
     }
 
-    /*
-    int dx[2], dy[2];
-    if(forColor == black) {
-        dx[0] = -1; dy[0] = -1;
-        dx[1] = +1; dy[1] = -1;
-    }
-    else if(forColor == white) {
-        dx[0] = -1; dy[0] = +1;
-        dx[1] = +1; dy[1] = +1;
-    }
-    */
     //black 0~1; white 2~3; king 0~3
     int dx[]{-1, +1, -1, +1};
     int dy[]{-1, -1, +1, +1};
-
 
     if(maxDepth == 0) { //normal move...
         qDebug() << "Cannot eat any piece, try normal move...";
@@ -133,23 +125,6 @@ wayNode* GameState::findWays(Draughts forColor)
                     if(!(board[i] & king)) break; //不是王时，仅深入一格
                 }
             }
-
-
-//            switch (board[i]) {
-//            case black:
-
-//                break;
-//            case white:
-
-//                break;
-//            case blackking: case whiteking:
-
-//                break;
-//            default: //shouldn't reach here.
-//                qDebug() << "Error happened when trying normal move!!!";
-//                break;
-//            }
-
 
             if(canNormalMove) {
                 virNode->child.push_back(nd);
@@ -183,7 +158,7 @@ int GameState::growTree(wayNode *root, const int depth)
             while(board[10*ny + nx] == null && inBoard(nx, ny))
             { nx += dx[i]; ny += dy[i]; }
             if(!inBoard(nx, ny)) continue;
-            //TODO: 判定是否能吃子...
+            //判定是否能吃子.
             if(   (board[10*ny + nx] & color) != (board[10*y + x] & color)
                && !(board[ny*10 + nx] & detected)) {
                 int n2x = nx + dx[i], n2y = ny + dy[i];
@@ -221,7 +196,6 @@ int GameState::growTree(wayNode *root, const int depth)
                     n2y += dy[i];
                 }
             }
-
         }
         else { //兵
             int nx = x+dx[i], n2x = x + 2*dx[i];

@@ -6,7 +6,7 @@
 
 enum Draughts {
     //         16        8         4         2     1
-    //      detected  isking   iswhite   isblack   0
+    //      detected  isking   iswhite   isblack   0(保留)
     null = 0,
     black = 2,
     white = 4,
@@ -38,13 +38,12 @@ struct wayNode {
 class GameState
 {
 public:
-    GameState();
-
-    QPoint move(QPoint from, QPoint to);
+    GameState(Draughts *initBoard = nullptr);
 
     Draughts *board;
 
     wayNode* findWays(Draughts color);
+    QPoint move(QPoint from, QPoint to);
 
 private:
     int maxDepth;

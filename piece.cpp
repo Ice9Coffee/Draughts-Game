@@ -20,7 +20,6 @@ Piece::Piece(GameView *gameView, Draughts draught)
     setCursor(Qt::OpenHandCursor);
     setAcceptedMouseButtons(Qt::LeftButton);
     setZValue(-1);
-
 }
 
 QRectF Piece::boundingRect() const
@@ -62,15 +61,6 @@ void Piece::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     }
     painter->drawEllipse(-PIECE_R, -PIECE_R, 2*PIECE_R, 2*PIECE_R);
 
-    /*
-    if(takable) {
-        QPen pen(QColor(255, 128, 0), 3);
-        painter->setPen(pen);
-        painter->setBrush(Qt::NoBrush);
-        painter->drawEllipse(-PIECE_R - 1, -PIECE_R - 1, 2*PIECE_R + 2, 2*PIECE_R + 2);
-    }
-    */
-
 }
 
 void Piece::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -78,7 +68,6 @@ void Piece::mousePressEvent(QGraphicsSceneMouseEvent *event)
     setZValue(0);
     setCursor(Qt::ClosedHandCursor);
 
-    //QPointF pos = event->buttonDownScenePos(Qt::LeftButton);
     //VFX.
     QPoint p;
     p.rx() = (int)(pos().x() / (CELL_R * 2) + 5);
@@ -88,19 +77,12 @@ void Piece::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
     update();
     QGraphicsItem::mousePressEvent(event);
-    /*
-    if(takable) {
-        setCursor(Qt::ClosedHandCursor);
-        update();
-        QGraphicsItem::mousePressEvent(event);
-    }
-    */
 }
 
 void Piece::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    setCursor(Qt::OpenHandCursor);
     setZValue(-1);
+    setCursor(Qt::OpenHandCursor);
 
     QPointF fPos = event->buttonDownScenePos(Qt::LeftButton);
     QPointF tPos = event->scenePos();

@@ -14,7 +14,7 @@
    <string>GameWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="GameView" name="graphicsView">
+   <widget class="GameView" name="gameView">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -22,6 +22,12 @@
       <width>602</width>
       <height>602</height>
      </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>602</width>
+      <height>602</height>
+     </size>
     </property>
    </widget>
   </widget>
