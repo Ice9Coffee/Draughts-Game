@@ -209,3 +209,23 @@ void GameWindow::on_clientAction_triggered()
     connect(clientDlg, SIGNAL(clientSet(QString, quint16)), this, SLOT(connectHost(QString,quint16)));
     clientDlg->exec();
 }
+
+void GameWindow::on_personalAction_triggered()
+{ ui->gameView->initGame(); }
+
+void GameWindow::on_testExampleAction_triggered()
+{
+    Draughts* tBoard = new Draughts[100];
+    memset(tBoard, null, 100*sizeof(Draughts));
+    tBoard[12] = white;
+    tBoard[16] = black;
+    tBoard[18] = black;
+    tBoard[29] = white;
+    tBoard[32] = white;
+    tBoard[43] = black;
+    tBoard[52] = white;
+    tBoard[65] = white;
+    tBoard[72] = white;
+    tBoard[85] = black;
+    ui->gameView->initGame(tBoard);
+}

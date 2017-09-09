@@ -74,6 +74,7 @@ void Piece::mousePressEvent(QGraphicsSceneMouseEvent *event)
     p.ry() = (int)(pos().y() / (CELL_R * 2) + 5);
     game->hdPieceHL();
     game->hlWay(p);
+    game->hdTraceHL();
 
     update();
     QGraphicsItem::mousePressEvent(event);

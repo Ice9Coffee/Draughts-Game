@@ -6,6 +6,7 @@
 #include "piece.h"
 #include "wayhighlight.h"
 #include "piecehighlight.h"
+#include "tracehighlight.h"
 #include "gamewindow.h"
 
 class GameView : public QGraphicsView
@@ -24,9 +25,11 @@ public:
 
     void hlWay(wayNode* root);
     void hlWay(QPoint pos);
+    void hlTrace(QPoint pos);
     void hlPiece(wayNode* nd);
     void hdWayHL();
     void hdPieceHL();
+    void hdTraceHL();
 
 signals:
     void tempoData(const QPoint from, const QPoint to);

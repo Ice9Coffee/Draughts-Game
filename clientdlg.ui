@@ -55,7 +55,7 @@
         <number>255</number>
        </property>
        <property name="value">
-        <number>192</number>
+        <number>127</number>
        </property>
       </widget>
      </item>
@@ -84,7 +84,7 @@
         <number>255</number>
        </property>
        <property name="value">
-        <number>168</number>
+        <number>0</number>
        </property>
       </widget>
      </item>
@@ -113,7 +113,7 @@
         <number>255</number>
        </property>
        <property name="value">
-        <number>2</number>
+        <number>0</number>
        </property>
       </widget>
      </item>

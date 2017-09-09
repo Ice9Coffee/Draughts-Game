@@ -49,6 +49,10 @@ private slots:
 
     void on_clientAction_triggered();
 
+    void on_personalAction_triggered();
+
+    void on_testExampleAction_triggered();
+
 private:
     Ui::GameWindow *ui;
 

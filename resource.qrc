@@ -3,5 +3,6 @@
         <file alias="board">pic/board.png</file>
         <file alias="wayHL">pic/wayHighlight.png</file>
         <file alias="pieceHL">pic/pieceHighlight.png</file>
+        <file alias="traceHL">pic/traceHighlight.png</file>
     </qresource>
 </RCC>

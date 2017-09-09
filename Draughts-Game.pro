@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     wayhighlight.cpp \
     piecehighlight.cpp \
     serverdlg.cpp \
-    clientdlg.cpp
+    clientdlg.cpp \
+    tracehighlight.cpp
 
 HEADERS  += gamewindow.h \
     gameview.h \
@@ -42,7 +43,8 @@ HEADERS  += gamewindow.h \
     wayhighlight.h \
     piecehighlight.h \
     serverdlg.h \
-    clientdlg.h
+    clientdlg.h \
+    tracehighlight.h
 
 FORMS    += gamewindow.ui \
     serverdlg.ui \

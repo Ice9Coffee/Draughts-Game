@@ -96,7 +96,7 @@ void GameView::tempo(Piece* p, const QPoint from, const QPoint to) {
     wayNode* ndTo   = nullptr;
     QPointF finalPos;
 
-    hdWayHL(); //VFX.  已松开鼠标.
+    hdPieceHL(); hdWayHL(); //VFX.  关闭高亮.
 
     //检验合法性...
     for(wayNode* nd: way->child) if(nd->pos == from) { ndFrom = nd; break; }
@@ -133,12 +133,16 @@ void GameView::tempo(Piece* p, const QPoint from, const QPoint to) {
                     p->drt |= king;
                 }
 
+                hlTrace(ndFrom->pos);
+                hlTrace(ndTo->pos);
                 turn();
             }
             else { //VFX.
+                hlTrace(ndFrom->pos);
                 hlPiece(ndTo);
                 hlWay(ndTo);
             }
+
         }
         else { //illegal, go back.
             finalPos.rx() = from.x()*CELL_R*2 + CELL_R - SCENE_R;
@@ -209,13 +213,16 @@ void GameView::remoteTempo(const QPoint from, const QPoint to)
                     state->board[idx] |= king;
                     p->drt |= king;
                 }
-
+                hlTrace(ndFrom->pos);
+                hlTrace(ndTo->pos);
                 turn();
             }
             else { //VFX.  未到底.
+                hlTrace(ndFrom->pos);
                 hlPiece(ndTo);
                 hlWay(ndTo);
             }
+
         }
         else { //illegal, go back.
             finalPos.rx() = from.x()*CELL_R*2 + CELL_R - SCENE_R;
@@ -266,6 +273,16 @@ void GameView::hlWay(QPoint pos)
     qDebug() << "Error in GameView::hlWay!!!!!";
 }
 
+void GameView::hlTrace(QPoint pos)
+{
+    qreal x = pos.x()*CELL_R*2 + CELL_R - SCENE_R;
+    qreal y = pos.y()*CELL_R*2 + CELL_R - SCENE_R;
+    auto* hl = new traceHighlight;
+    scene->addItem(hl);
+    hl->setPos(x, y);
+    qDebug() << "hlTrace at (" << x << ',' << y << ')';
+}
+
 void GameView::hlPiece(wayNode *nd)
 {
     qreal x = nd->pos.x()*CELL_R*2 + CELL_R - SCENE_R;
@@ -294,6 +311,16 @@ void GameView::hdPieceHL()
             scene->removeItem(item);
     }
     qDebug() << "pieceHL hidden!";
+    update();
+}
+
+void GameView::hdTraceHL()
+{
+    for(QGraphicsItem* item: scene->items()) {
+        if(qgraphicsitem_cast<traceHighlight*>(item))
+            scene->removeItem(item);
+    }
+    qDebug() << "traceHL hidden!";
     update();
 }
 
