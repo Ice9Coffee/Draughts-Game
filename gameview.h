@@ -17,7 +17,7 @@ public:
     void initGame(Draughts *initBoard = nullptr);
 
     //For vs.Network mode
-    void chooseRivalColor(Draughts c);
+    void setRivalColor(Draughts c);
 
     void tempo(Piece *p, const QPoint from, const QPoint to);
     void remoteTempo(const QPoint from, const QPoint to);

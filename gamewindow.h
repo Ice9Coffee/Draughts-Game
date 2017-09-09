@@ -6,6 +6,9 @@
 #include <QTcpSocket>
 #include <QHostAddress>
 
+#include "serverdlg.h"
+#include "clientdlg.h"
+
 enum Magic {
     tempo = 0x1ce9,
     admitDefeat = 0x0990,
@@ -26,10 +29,9 @@ public:
     explicit GameWindow(QWidget *parent = 0);
     ~GameWindow();
 
+public slots:
     void initServer(quint16 port);
     void connectHost(QString ip, quint16 port);
-
-
 
 signals:
 
@@ -42,6 +44,10 @@ private slots:
     void sendTempoData(const QPoint from, const QPoint to);
     void sendAdmitDefeat();
     void sendDrawRequest();
+
+    void on_serverAction_triggered();
+
+    void on_clientAction_triggered();
 
 private:
     Ui::GameWindow *ui;

@@ -15,8 +15,27 @@ GameWindow::GameWindow(QWidget *parent) :
     connect(ui->gameView, SIGNAL(tempoData(QPoint, QPoint)),
             this, SLOT(sendTempoData(QPoint, QPoint)));
 
-    //ui->gameView->initGame(); //for test
-    ui->gameView->chooseRivalColor(white); //for test
+    //ui->gameView->initGame(); //normal start.
+
+    /*/for test...
+    Draughts* tBoard = new Draughts[100];
+    memset(tBoard, null, 100*sizeof(Draughts));
+    tBoard[12] = white;
+    tBoard[16] = black;
+    tBoard[18] = black;
+    tBoard[29] = white;
+    tBoard[32] = white;
+    tBoard[43] = black;
+    tBoard[52] = white;
+    tBoard[65] = white;
+    tBoard[72] = white;
+    tBoard[85] = black;
+    ui->gameView->initGame(tBoard);
+    //*/
+
+    //ui->gameView->setRivalColor(black); //for test
+    //ui->gameView->setRivalColor(white); //for test
+    //ui->gameView->setRivalColor(null); //for test
 }
 
 GameWindow::~GameWindow()
@@ -29,11 +48,22 @@ void GameWindow::initServer(quint16 port) {
     listenSocket->listen(QHostAddress::Any, port);
     connect(listenSocket, SIGNAL(newConnection()),
             this, SLOT(acceptConnection()));
+    qDebug() << "Sever established! Listening...";
+    /*
+    QMessageBox::information(this, TITLE,
+        tr("Listening..."), QMessageBox::Cancel);
+    listenSocket->close();
+    delete listenSocket;
+    */
 }
 
 void GameWindow::acceptConnection() {
     rwSocket = listenSocket->nextPendingConnection();
     connect(rwSocket, SIGNAL(readyRead()), this, SLOT(recvData()));
+
+    ui->gameView->initGame();
+    ui->gameView->setRivalColor(white);
+    onlineMode = true;
 }
 
 void GameWindow::connectHost(QString ip, quint16 port)
@@ -41,6 +71,10 @@ void GameWindow::connectHost(QString ip, quint16 port)
     rwSocket = new QTcpSocket;
     rwSocket->connectToHost(QHostAddress(ip), port);
     connect(rwSocket, SIGNAL(readyRead()), this, SLOT(recvData()));
+
+    ui->gameView->initGame();
+    ui->gameView->setRivalColor(black);
+    onlineMode = true;
 }
 
 void GameWindow::recvData()
@@ -161,4 +195,17 @@ void GameWindow::endGame(int result) {
         break;
     }
     ui->gameView->setEnabled(false);
+}
+
+void GameWindow::on_serverAction_triggered() {
+    ServerDlg* serverDlg = new ServerDlg(this);
+    connect(serverDlg, SIGNAL(serverSet(quint16)), this, SLOT(initServer(quint16)));
+    serverDlg->exec();
+}
+
+void GameWindow::on_clientAction_triggered()
+{
+    ClientDlg* clientDlg = new ClientDlg(this);
+    connect(clientDlg, SIGNAL(clientSet(QString, quint16)), this, SLOT(connectHost(QString,quint16)));
+    clientDlg->exec();
 }

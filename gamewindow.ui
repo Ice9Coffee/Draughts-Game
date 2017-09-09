@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>GameWindow</string>
+   <string>Draughts-Game</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="GameView" name="gameView">
@@ -72,7 +72,7 @@
     <string>As &amp;Server</string>
    </property>
    <property name="shortcut">
-    <string>Alt+S</string>
+    <string>Alt+S, F2</string>
    </property>
   </action>
   <action name="clientAction">
@@ -80,7 +80,7 @@
     <string>As &amp;Client</string>
    </property>
    <property name="shortcut">
-    <string>Alt+C</string>
+    <string>Alt+C, F3</string>
    </property>
   </action>
   <action name="aboutAction">

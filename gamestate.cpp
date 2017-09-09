@@ -19,19 +19,6 @@ GameState::GameState(Draughts* initBoard) :
                  initBoard, 100*sizeof(Draughts));
     }
 
-
-    /*/for test...
-    board[12] = white;
-    board[16] = black;
-    board[18] = black;
-    board[29] = white;
-    board[32] = white;
-    board[43] = black;
-    board[52] = white;
-    board[65] = white;
-    board[72] = white;
-    board[85] = black;
-    //*/
     //for(int i = 0; i < 100; ++i) qDebug() << board[i];
 }
 

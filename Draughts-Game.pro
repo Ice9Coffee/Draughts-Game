@@ -30,7 +30,9 @@ SOURCES += main.cpp\
     gamestate.cpp \
     piece.cpp \
     wayhighlight.cpp \
-    piecehighlight.cpp
+    piecehighlight.cpp \
+    serverdlg.cpp \
+    clientdlg.cpp
 
 HEADERS  += gamewindow.h \
     gameview.h \
@@ -38,9 +40,13 @@ HEADERS  += gamewindow.h \
     piece.h \
     const.h \
     wayhighlight.h \
-    piecehighlight.h
+    piecehighlight.h \
+    serverdlg.h \
+    clientdlg.h
 
-FORMS    += gamewindow.ui
+FORMS    += gamewindow.ui \
+    serverdlg.ui \
+    clientdlg.ui
 
 RESOURCES += \
     resource.qrc

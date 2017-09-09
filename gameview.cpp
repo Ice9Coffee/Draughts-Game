@@ -22,7 +22,11 @@ GameView::GameView(QWidget *parent)
 void GameView::initGame(Draughts* initBoard)
 {
     //add pieces...
-    if(state) delete state;
+    if(state) {
+        delete state;
+        for(QGraphicsItem* item: items())
+            scene->removeItem(item);
+    }
     state = new GameState(initBoard);
     for(int i = 0; i < 100; ++i) {
         if(state->board[i] == null) continue;
@@ -41,15 +45,16 @@ void GameView::initGame(Draughts* initBoard)
     turn();
 }
 
-void GameView::chooseRivalColor(Draughts c)
+void GameView::setRivalColor(Draughts c)
 {
     rivalColor = c;
+    setMatrix(QMatrix());
     if(rivalColor == black) rotate(180);
 
     for(QGraphicsItem* item: items()) if(Piece* p = qgraphicsitem_cast<Piece*>(item))
     {
-        //if((p->drt & color) == rivalColor) p->setAcceptedMouseButtons(0);
-        //else p->setAcceptedMouseButtons(Qt::LeftButton);
+        if((p->drt & color) == rivalColor) p->setAcceptedMouseButtons(0);
+        else p->setAcceptedMouseButtons(Qt::LeftButton);
     }
 }
 
@@ -161,6 +166,78 @@ void GameView::tempo(Piece* p, const QPoint from, const QPoint to) {
 void GameView::remoteTempo(const QPoint from, const QPoint to)
 {
     //TODO............
+    Piece* p = nullptr;
+    QPointF fromPos(from.x()*CELL_R*2 + CELL_R - SCENE_R,
+                    from.y()*CELL_R*2 + CELL_R - SCENE_R);
+    QGraphicsItem* item = scene->itemAt(fromPos, transform());
+    p = qgraphicsitem_cast<Piece*>(item);
+
+    wayNode* ndFrom = nullptr;
+    wayNode* ndTo   = nullptr;
+    QPointF finalPos;
+
+    hdPieceHL(); hdWayHL(); //VFX.  关闭高亮.
+
+    //检验合法性...
+    for(wayNode* nd: way->child) if(nd->pos == from) { ndFrom = nd; break; }
+    if(ndFrom != nullptr) {
+        for(wayNode* nd: ndFrom->child) if(nd->pos == to) { ndTo = nd; break; }
+        if( ndTo != nullptr ) {
+
+            //合法性判定结束！执行一着棋
+            //吃子.
+            QPoint eat = state->move(from, to);
+            if(eat.x() != -1 && eat.y() != -1) {
+                QPointF eatPos(eat.x()*CELL_R*2 + CELL_R - SCENE_R,
+                               eat.y()*CELL_R*2 + CELL_R - SCENE_R);
+                auto* item = scene->itemAt(eatPos, transform());
+                if(qgraphicsitem_cast<Piece*>(item)) scene->removeItem(item);
+            }
+            //移动.
+            finalPos.rx() = to.x()*CELL_R*2 + CELL_R - SCENE_R;
+            finalPos.ry() = to.y()*CELL_R*2 + CELL_R - SCENE_R;
+            p->setPos(finalPos);
+            way = ndFrom;
+            //到底时，回合结束
+            if(ndTo->child.isEmpty()) {
+                //升变.
+                int idx = 10*to.y() + to.x();
+                Draughts piece = state->board[idx];
+                if((to.y() == 0 && ((piece & color) == black))
+                    || (to.y() == 9 && ((piece & color) == white)))
+                {
+                    state->board[idx] |= king;
+                    p->drt |= king;
+                }
+
+                turn();
+            }
+            else { //VFX.  未到底.
+                hlPiece(ndTo);
+                hlWay(ndTo);
+            }
+        }
+        else { //illegal, go back.
+            finalPos.rx() = from.x()*CELL_R*2 + CELL_R - SCENE_R;
+            finalPos.ry() = from.y()*CELL_R*2 + CELL_R - SCENE_R;
+            p->setPos(finalPos);
+            //VFX.
+            if(way->pos.x() == -1 && way->pos.y() == -1)
+                for(wayNode* nd: way->child) hlPiece(nd);
+            else hlPiece(ndFrom);
+        }
+    }
+    else { //shoudn't happen in the final version.
+        finalPos.rx() = from.x()*CELL_R*2 + CELL_R - SCENE_R;
+        finalPos.ry() = from.y()*CELL_R*2 + CELL_R - SCENE_R;
+        p->setPos(finalPos);
+        //VFX.
+        if(way->pos.x() == -1 && way->pos.y() == -1)
+            for(wayNode* nd: way->child) hlPiece(nd);
+        else hlPiece(ndFrom);
+    }
+
+    return;
 }
 
 void GameView::hlWay(wayNode *root)
