@@ -59,35 +59,35 @@ void GameView::turn() {
     way = state->findWays(movingColor);
 
     if(way->child.isEmpty()) {
-        //ofColor lose....
-        qDebug() << "Draughts:" << (movingColor == black ? "Black" : "White") << "lose!!!!!!!";
+        //TODO: ofColor lose....
+        qDebug() << "Draughts:"
+                 << (movingColor == black ? "Black" : "White") << "lose!!!!!!!";
         return;
     }
 
-    //VFX.
-    for(wayNode* nd: way->child) hlPiece(nd);
+    for(wayNode* nd: way->child) hlPiece(nd); //VFX.
 
-    qDebug() << "Tree planted!" << (movingColor == black ? "Black" : "White") << "please.";
+    qDebug() << "Tree planted!"
+             << (movingColor == black ? "Black" : "White") << "please.";
     update();
 }
 
-void GameView::tempo(Piece* p, QPoint from, QPoint to) {
+void GameView::tempo(Piece* p, const QPoint from, const QPoint to) {
 
     wayNode* ndFrom = nullptr;
     wayNode* ndTo   = nullptr;
     QPointF finalPos;
 
-    //VFX.  已松开鼠标.
-    hdWayHL();
+    hdWayHL(); //VFX.  已松开鼠标.
 
     //检验合法性...
-    for(wayNode* nd: way->child)
-        if(nd->pos == from) { ndFrom = nd; break; }
+    for(wayNode* nd: way->child) if(nd->pos == from) { ndFrom = nd; break; }
     if(ndFrom != nullptr) {
-        for(wayNode* nd: ndFrom->child)
-            if(nd->pos == to) { ndTo = nd; break; }
+        for(wayNode* nd: ndFrom->child) if(nd->pos == to) { ndTo = nd; break; }
         if( ndTo != nullptr ) {
+
             //合法性判定结束！执行一着棋
+            //TODO: 发信...
             //吃子.
             QPoint eat = state->move(from, to);
             if(eat.x() != -1 && eat.y() != -1) {
@@ -99,12 +99,20 @@ void GameView::tempo(Piece* p, QPoint from, QPoint to) {
             //移动.
             finalPos.rx() = to.x()*CELL_R*2 + CELL_R - SCENE_R;
             finalPos.ry() = to.y()*CELL_R*2 + CELL_R - SCENE_R;
-            way = ndFrom;
             p->setPos(finalPos);
-
+            way = ndFrom;
             //到底时，回合结束
             if(ndTo->child.isEmpty()) {
                 //TODO: 升变...
+                int idx = 10*to.y() + to.x();
+                Draughts piece = state->board[idx];
+                if((to.y() == 0 && ((piece & color) == black))
+                    || (to.y() == 9 && ((piece & color) == white)))
+                {
+                    state->board[idx] |= king;
+                    p->drt |= king;
+                }
+
                 turn();
             }
             else { //VFX.

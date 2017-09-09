@@ -16,7 +16,7 @@ public:
 
     GameState *state;
 
-    void tempo(Piece *p, QPoint from, QPoint to);
+    void tempo(Piece *p, const QPoint from, const QPoint to);
 
     void hlWay(wayNode* root);
     void hlWay(QPoint pos);

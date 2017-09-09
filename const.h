@@ -5,7 +5,7 @@
 
 const qreal SCENE_R = 300;
 const qreal CELL_R = 30;
-const qreal PIECE_R = 25;
+const qreal PIECE_R = 23.6;
 
 
 #endif // CONST_H

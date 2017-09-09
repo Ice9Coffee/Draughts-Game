@@ -5,14 +5,14 @@
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
+#include <QColor>
 #include <QStyleOption>
 
 #include <QDebug>
 
-Piece::Piece(GameView *gameView, Draughts color)
+Piece::Piece(GameView *gameView, Draughts draught)
     : game(gameView),
-      m_color(color),
-      takable(false)
+      drt(draught)
 {
     setFlag(ItemIsMovable);
     setFlag(ItemSendsGeometryChanges);
@@ -26,7 +26,7 @@ Piece::Piece(GameView *gameView, Draughts color)
 QRectF Piece::boundingRect() const
 {
     qreal adjust = 2;
-    return QRectF( -PIECE_R - adjust, -PIECE_R - adjust, 2*PIECE_R+3 + adjust, 2*PIECE_R+3 + adjust );
+    return QRectF( -PIECE_R - adjust, -PIECE_R - adjust, 2*PIECE_R+3 + 2*adjust, 2*PIECE_R+3 + 2*adjust );
 }
 
 QPainterPath Piece::shape() const
@@ -41,10 +41,18 @@ void Piece::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    switch (m_color) {
+    switch (drt) {
+    case blackking:
+        painter->setPen(QPen(QColor(255, 233, 0), 5));
+        painter->setBrush(QBrush(Qt::black));
+        break;
     case black:
         painter->setPen(QPen(Qt::white, 0));
         painter->setBrush(QBrush(Qt::black));
+        break;
+    case whiteking:
+        painter->setPen(QPen(QColor(255, 233, 0), 5));
+        painter->setBrush(QBrush(Qt::white));
         break;
     case white:
         painter->setPen(QPen(Qt::black, 0));
@@ -71,6 +79,7 @@ void Piece::mousePressEvent(QGraphicsSceneMouseEvent *event)
     setCursor(Qt::ClosedHandCursor);
 
     //QPointF pos = event->buttonDownScenePos(Qt::LeftButton);
+    //VFX.
     QPoint p;
     p.rx() = (int)(pos().x() / (CELL_R * 2) + 5);
     p.ry() = (int)(pos().y() / (CELL_R * 2) + 5);
@@ -93,16 +102,16 @@ void Piece::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     setCursor(Qt::OpenHandCursor);
     setZValue(-1);
 
-
     QPointF fPos = event->buttonDownScenePos(Qt::LeftButton);
     QPointF tPos = event->scenePos();
     QPoint from((int)(fPos.x() / (CELL_R * 2) + 5), (int)(fPos.y() / (CELL_R * 2) + 5));
     QPoint to((int)(tPos.x() / (CELL_R * 2) + 5), (int)(tPos.y() / (CELL_R * 2) + 5));
-    //qDebug() << this << "from" << from << "to" << to;
 
     this->game->tempo(this, from, to);
 
-    //for debug...
+    /*/for debug...
+    //qDebug() << this << "from" << from << "to" << to;
+    //qDebug() << this << "to" << tPos << "in Scene";
     qDebug() << "board state:";
     for(int i = 0; i < 10;++i){
         qDebug()<< this->game->state->board[10*i + 0]
@@ -116,7 +125,6 @@ void Piece::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
                 << this->game->state->board[10*i + 8]
                 << this->game->state->board[10*i + 9];
     }
-    //qDebug() << this << "to" << tPos << "in Scene";
     //*/
 
     update();
