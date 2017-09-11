@@ -2,6 +2,7 @@
 #define GAMEVIEW_H
 
 #include <QGraphicsView>
+#include <QSoundEffect>
 #include "gamestate.h"
 #include "piece.h"
 #include "wayhighlight.h"
@@ -31,6 +32,8 @@ public:
     void hdPieceHL();
     void hdTraceHL();
 
+    void playMoveSE();
+
 signals:
     void tempoData(const QPoint from, const QPoint to);
     void endSignal(int result);
@@ -47,6 +50,9 @@ private:
     Draughts rivalColor;
 
     QPixmap bgPix;
+
+    QSoundEffect moveSE;
+    QSoundEffect lvUpSE;
 
     void turn();
 

@@ -5,7 +5,8 @@
 #-------------------------------------------------
 
 QT += core gui\
-      network
+      network\
+      multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -33,7 +34,8 @@ SOURCES += main.cpp\
     piecehighlight.cpp \
     serverdlg.cpp \
     clientdlg.cpp \
-    tracehighlight.cpp
+    tracehighlight.cpp \
+    bgmthread.cpp
 
 HEADERS  += gamewindow.h \
     gameview.h \
@@ -44,7 +46,8 @@ HEADERS  += gamewindow.h \
     piecehighlight.h \
     serverdlg.h \
     clientdlg.h \
-    tracehighlight.h
+    tracehighlight.h \
+    bgmthread.h
 
 FORMS    += gamewindow.ui \
     serverdlg.ui \

@@ -24,7 +24,7 @@ public:
 
 private:
     QPointF newPos;
-    GameView *game;    
+    GameView *game;
 };
 
 #endif // PIECE_H

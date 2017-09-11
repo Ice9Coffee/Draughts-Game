@@ -4,5 +4,17 @@
         <file alias="wayHL">pic/wayHighlight.png</file>
         <file alias="pieceHL">pic/pieceHighlight.png</file>
         <file alias="traceHL">pic/traceHighlight.png</file>
+        <file alias="black">pic/Black.png</file>
+        <file alias="blackking">pic/Blackk.png</file>
+        <file alias="white">pic/White.png</file>
+        <file alias="whiteking">pic/Whitek.png</file>
+        <file alias="bg">pic/bg.png</file>
+    </qresource>
+    <qresource prefix="/SE">
+        <file alias="chessmove">sound/351518__mh2o__chess-move-on-alabaster.wav</file>
+        <file alias="lvUp">sound/320654__rhodesmas__level-up-02.wav</file>
+    </qresource>
+    <qresource prefix="/bgm">
+        <file alias="bgm0">sound/深層森林.wav</file>
     </qresource>
 </RCC>

@@ -7,13 +7,21 @@
 GameWindow::GameWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::GameWindow),
-    onlineMode(false)
+    onlineMode(false),
+    bgm(new BgmThread(":/bgm/bgm0"))
 {
     ui->setupUi(this);
 
     connect(ui->gameView, SIGNAL(endSignal(int)), this, SLOT(endGame(int)));
     connect(ui->gameView, SIGNAL(tempoData(QPoint, QPoint)),
             this, SLOT(sendTempoData(QPoint, QPoint)));
+
+    bgm->start();
+
+    QPalette pallete;
+    QPixmap bg(":/pic/bg");
+    pallete.setBrush(QPalette::Window, QBrush(bg));
+    this->setPalette(pallete);
 
     //ui->gameView->initGame(); //normal start.
 
@@ -211,7 +219,9 @@ void GameWindow::on_clientAction_triggered()
 }
 
 void GameWindow::on_personalAction_triggered()
-{ ui->gameView->initGame(); }
+{
+    ui->gameView->initGame();
+}
 
 void GameWindow::on_testExampleAction_triggered()
 {
@@ -228,4 +238,25 @@ void GameWindow::on_testExampleAction_triggered()
     tBoard[72] = white;
     tBoard[85] = black;
     ui->gameView->initGame(tBoard);
+}
+
+void GameWindow::on_admitDefeatAction_triggered() {
+    int re =QMessageBox::warning(this, TITLE,
+        tr("Are you sure?"), QMessageBox::Yes | QMessageBox::No);
+    if(re == QMessageBox::Yes) {
+        sendAdmitDefeat();
+        QMessageBox::information(this, TITLE,
+            tr("You admitted defeat!"));
+        endGame(-1);
+    }
+}
+
+void GameWindow::on_drawRequestAction_triggered() {
+    int re =QMessageBox::warning(this, TITLE,
+        tr("Are you sure?"), QMessageBox::Yes | QMessageBox::No);
+    if(re == QMessageBox::Yes) {
+        sendDrawRequest();
+        QMessageBox::information(this, TITLE,
+            tr("Request sent!"));
+    }
 }

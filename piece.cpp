@@ -16,6 +16,7 @@ Piece::Piece(GameView *gameView, Draughts draught)
 {
     setFlag(ItemIsMovable);
     setFlag(ItemSendsGeometryChanges);
+    setFlag(ItemIgnoresTransformations);
     setCacheMode(DeviceCoordinateCache);
     setCursor(Qt::OpenHandCursor);
     setAcceptedMouseButtons(Qt::LeftButton);
@@ -25,13 +26,13 @@ Piece::Piece(GameView *gameView, Draughts draught)
 QRectF Piece::boundingRect() const
 {
     qreal adjust = 2;
-    return QRectF( -PIECE_R - adjust, -PIECE_R - adjust, 2*PIECE_R+3 + 2*adjust, 2*PIECE_R+3 + 2*adjust );
+    return QRectF( -PIECE_VR - adjust, -PIECE_VR - adjust, 2*PIECE_VR+3 + 2*adjust, 2*PIECE_VR+3 + 2*adjust );
 }
 
 QPainterPath Piece::shape() const
 {
     QPainterPath path;
-    path.addEllipse(-PIECE_R, -PIECE_R, 2*PIECE_R, 2*PIECE_R);
+    path.addEllipse(-PIECE_VR, -PIECE_VR, 2*PIECE_VR, 2*PIECE_VR);
     return path;
 }
 
@@ -42,25 +43,19 @@ void Piece::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 
     switch (drt) {
     case blackking:
-        painter->setPen(QPen(QColor(255, 233, 0), 5));
-        painter->setBrush(QBrush(Qt::black));
+        painter->drawPixmap(-PIECE_VR, -PIECE_VR, 2*PIECE_VR, 2*PIECE_VR, QPixmap(":/pic/blackking"));
         break;
     case black:
-        painter->setPen(QPen(Qt::white, 0));
-        painter->setBrush(QBrush(Qt::black));
+        painter->drawPixmap(-PIECE_VR, -PIECE_VR, 2*PIECE_VR, 2*PIECE_VR, QPixmap(":/pic/black"));
         break;
     case whiteking:
-        painter->setPen(QPen(QColor(255, 233, 0), 5));
-        painter->setBrush(QBrush(Qt::white));
+        painter->drawPixmap(-PIECE_VR, -PIECE_VR, 2*PIECE_VR, 2*PIECE_VR, QPixmap(":/pic/whiteking"));
         break;
     case white:
-        painter->setPen(QPen(Qt::black, 0));
-        painter->setBrush(QBrush(Qt::white));
+        painter->drawPixmap(-PIECE_VR, -PIECE_VR, 2*PIECE_VR, 2*PIECE_VR, QPixmap(":/pic/white"));
     default:
         break;
     }
-    painter->drawEllipse(-PIECE_R, -PIECE_R, 2*PIECE_R, 2*PIECE_R);
-
 }
 
 void Piece::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -76,6 +71,8 @@ void Piece::mousePressEvent(QGraphicsSceneMouseEvent *event)
     game->hlWay(p);
     game->hdTraceHL();
 
+    game->playMoveSE();
+
     update();
     QGraphicsItem::mousePressEvent(event);
 }
@@ -84,6 +81,8 @@ void Piece::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     setZValue(-1);
     setCursor(Qt::OpenHandCursor);
+
+    game->playMoveSE();
 
     QPointF fPos = event->buttonDownScenePos(Qt::LeftButton);
     QPointF tPos = event->scenePos();

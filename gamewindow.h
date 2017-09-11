@@ -8,6 +8,7 @@
 
 #include "serverdlg.h"
 #include "clientdlg.h"
+#include "bgmthread.h"
 
 enum Magic {
     tempo = 0x1ce9,
@@ -33,9 +34,6 @@ public slots:
     void initServer(quint16 port);
     void connectHost(QString ip, quint16 port);
 
-signals:
-
-
 private slots:
     void endGame(int result);
 
@@ -46,12 +44,13 @@ private slots:
     void sendDrawRequest();
 
     void on_serverAction_triggered();
-
     void on_clientAction_triggered();
-
     void on_personalAction_triggered();
-
     void on_testExampleAction_triggered();
+
+    void on_admitDefeatAction_triggered();
+
+    void on_drawRequestAction_triggered();
 
 private:
     Ui::GameWindow *ui;
@@ -59,6 +58,8 @@ private:
     bool onlineMode;
     QTcpServer *listenSocket;
     QTcpSocket *rwSocket;
+
+    BgmThread* bgm;
 
     void agreeDraw(bool agree);
 

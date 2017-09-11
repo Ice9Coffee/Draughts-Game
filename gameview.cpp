@@ -5,7 +5,8 @@
 
 GameView::GameView(QWidget *parent)
     : QGraphicsView(parent),
-      bgPix(":/pic/board"), way(nullptr), state(nullptr), rivalColor(null)
+      bgPix(":/pic/board"), moveSE(this), lvUpSE(this),
+      way(nullptr), state(nullptr), rivalColor(null)
 {
     scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
@@ -15,8 +16,11 @@ GameView::GameView(QWidget *parent)
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorViewCenter);
-    scale(1, 1);
+    scale(SCALE, SCALE);
     setMinimumSize(2*SCENE_R, 2*SCENE_R);
+
+    moveSE.setSource(QUrl::fromLocalFile(":/SE/chessmove"));
+    lvUpSE.setSource(QUrl::fromLocalFile(":/SE/lvUp"));
 }
 
 void GameView::initGame(Draughts* initBoard)
@@ -43,6 +47,7 @@ void GameView::initGame(Draughts* initBoard)
     //game start...
     movingColor = white; //set to white and call turn(), so the first one is black.
     turn();
+    setEnabled(true);
 }
 
 void GameView::setRivalColor(Draughts c)
@@ -131,6 +136,7 @@ void GameView::tempo(Piece* p, const QPoint from, const QPoint to) {
                 {
                     state->board[idx] |= king;
                     p->drt |= king;
+                    lvUpSE.play();
                 }
 
                 hlTrace(ndFrom->pos);
@@ -180,7 +186,7 @@ void GameView::remoteTempo(const QPoint from, const QPoint to)
     wayNode* ndTo   = nullptr;
     QPointF finalPos;
 
-    hdPieceHL(); hdWayHL(); //VFX.  关闭高亮.
+    hdPieceHL(); hdWayHL(); hdTraceHL();//VFX.  关闭高亮.
 
     //检验合法性...
     for(wayNode* nd: way->child) if(nd->pos == from) { ndFrom = nd; break; }
@@ -212,7 +218,9 @@ void GameView::remoteTempo(const QPoint from, const QPoint to)
                 {
                     state->board[idx] |= king;
                     p->drt |= king;
+                    lvUpSE.play();
                 }
+
                 hlTrace(ndFrom->pos);
                 hlTrace(ndTo->pos);
                 turn();
@@ -322,5 +330,10 @@ void GameView::hdTraceHL()
     }
     qDebug() << "traceHL hidden!";
     update();
+}
+
+void GameView::playMoveSE()
+{
+    moveSE.play();
 }
 
