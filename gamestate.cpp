@@ -133,11 +133,6 @@ int GameState::growTree(wayNode *root, const int depth)
     int dx[]{-1, +1, -1, +1};
     int dy[]{-1, -1, +1, +1};
 
-    //!!!!!!!目前仅考虑兵，不考虑王...
-    //! 王吃子寻路已完成
-
-    //bool isEnd = true;
-
     for(int i=0; i<4; ++i) { //尝试4方向吃子...
         if(board[10*y + x] & king) { //王
             int nx = x+dx[i], ny = y+dy[i];

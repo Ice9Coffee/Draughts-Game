@@ -175,7 +175,6 @@ void GameView::tempo(Piece* p, const QPoint from, const QPoint to) {
 
 void GameView::remoteTempo(const QPoint from, const QPoint to)
 {
-    //TODO............
     Piece* p = nullptr;
     QPointF fromPos(from.x()*CELL_R*2 + CELL_R - SCENE_R,
                     from.y()*CELL_R*2 + CELL_R - SCENE_R);
@@ -336,4 +335,3 @@ void GameView::playMoveSE()
 {
     moveSE.play();
 }
-
