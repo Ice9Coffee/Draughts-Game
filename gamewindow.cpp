@@ -220,6 +220,7 @@ void GameWindow::on_clientAction_triggered()
 
 void GameWindow::on_personalAction_triggered()
 {
+    ui->gameView->setRivalColor(null);
     ui->gameView->initGame();
 }
 
@@ -237,6 +238,7 @@ void GameWindow::on_testExampleAction_triggered()
     tBoard[65] = white;
     tBoard[72] = white;
     tBoard[85] = black;
+    ui->gameView->setRivalColor(null);
     ui->gameView->initGame(tBoard);
 }
 

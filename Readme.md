@@ -5,11 +5,20 @@ Project-Week2 in Summer 2017
 
 ## 基本功能实现
 
+
 - 实现网络对战功能。
     - 显示己方IP，能自定义端口号并进行监听；
     - 能够填写对方IP及端口号并进行连接；
     - 能够实时对对方的走棋在棋盘上做出响应，同时本方的走棋对方也能看到。
+
+![](preview/connect.png)
+
 - 实现完整功能的国际跳棋。
+
+![](preview/mainInterface.png)
+
+![](preview/test.png)
+
 - 认输与求和功能。
 - 音效与bgm。
 
